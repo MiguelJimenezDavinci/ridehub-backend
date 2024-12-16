@@ -22,7 +22,7 @@ export const uploadToCloudinary = async (req, res, next) => {
           console.error("Error uploading to Cloudinary:", error);
           return res
             .status(500)
-            .json({ message: "Error uploading to Cloudinary" });
+            .json({ message: "Error uploading to Cloudinary", error });
         }
         req.body.imageUrl = result.secure_url; // Guardar URL en el request
         next(); // Pasar al siguiente middleware
