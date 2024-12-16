@@ -1,5 +1,6 @@
 import express from "express";
 import connectDB from "./config/db.js";
+import cloudinary from "./config/cloudinary.js";
 import authRoutes from "./routes/authRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -22,6 +23,7 @@ const __dirname = path.dirname(__filename);
 
 // Conectar a la base de datos
 connectDB();
+cloudinary();
 
 // Configuración de Middlewares
 app.use(cors());
