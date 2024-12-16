@@ -15,7 +15,7 @@ import {
   getCommunityMembers,
   getUserCreatedCommunities,
 } from "../controllers/communityController.js";
-import { upload, uploadToCloudinary } from "../middleware/uploadMiddleware.js";
+import upload, { uploadToCloudinary } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 

@@ -17,7 +17,8 @@ import {
   getRelatedEvents,
 } from "../controllers/eventController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
-import { upload, uploadToCloudinary } from "../middleware/uploadMiddleware.js";
+
+import upload, { uploadToCloudinary } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 

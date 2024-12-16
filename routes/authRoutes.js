@@ -10,7 +10,7 @@ import {
   getUsers,
 } from "../controllers/authController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
-import { upload, uploadToCloudinary } from "../middleware/uploadMiddleware.js"; // Asegúrate de tener el middleware de subida de archivos configurado
+import upload, { uploadToCloudinary } from "../middleware/uploadMiddleware.js"; // Asegúrate de tener el middleware de subida de archivos configurado
 
 const router = express.Router();
 
