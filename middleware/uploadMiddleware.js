@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
 import path from "path";
+import cloudinary from "../config/cloudinary.js";
 
 // Configurar Multer para procesar archivos en memoria
 const storage = multer.memoryStorage();
