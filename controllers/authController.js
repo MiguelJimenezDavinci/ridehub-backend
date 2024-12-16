@@ -144,8 +144,10 @@ export const updateProfile = async (req, res) => {
     };
 
     // Si hay un archivo de imagen, agrega la propiedad photo
-    if (req.file) {
-      updateData.photo = req.file.filename; // Guarda el nombre del archivo
+    const media = req.file ? req.file.path : null;
+    const image = req.uploadedFile;
+    if (media || image) {
+      updateData.photo = image ? image.secure_url : media;
     }
 
     // Actualiza el usuario en la base de datos

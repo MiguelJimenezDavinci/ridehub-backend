@@ -7,6 +7,7 @@ export const createCommunity = async (req, res) => {
   try {
     const { name, description, creator } = req.body;
     const media = req.file ? req.file.path : null;
+    const image = req.uploadedFile; // Obtiene la respuesta de Cloudinary
 
     if (!name || !description || !creator)
       return res.status(400).json({ message: "Missing required fields" });
@@ -19,7 +20,7 @@ export const createCommunity = async (req, res) => {
     const newCommunity = new Community({
       name,
       description,
-      media,
+      media: image ? image.secure_url : media,
       creator,
       members: [creator],
     });
@@ -94,6 +95,7 @@ export const updateCommunity = async (req, res) => {
     const { communityId } = req.params;
     const { name, description } = req.body;
     const media = req.file ? req.file.path : null;
+    const image = req.uploadedFile; // Obtiene la respuesta de Cloudinary
 
     console.log(req.body);
 
@@ -111,7 +113,9 @@ export const updateCommunity = async (req, res) => {
 
     community.name = name;
     community.description = description;
-    if (media) community.media = media;
+    if (image || media) {
+      community.media = image ? image.secure_url : media;
+    }
 
     await community.save();
     res.status(200).json(community);

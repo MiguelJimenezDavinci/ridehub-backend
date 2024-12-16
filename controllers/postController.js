@@ -3,6 +3,7 @@ import Post from "../models/Post.js";
 export const createPost = async (req, res) => {
   const { description, location, category, taggedUsers } = req.body; // Eliminar media de aquí
   const media = req.file ? req.file.path : null; // Obtener el archivo subido
+  const image = req.uploadedFile; // Obtiene la respuesta de Cloudinary
 
   try {
     const newPost = new Post({
@@ -12,7 +13,7 @@ export const createPost = async (req, res) => {
       taggedUsers: taggedUsers
         ? taggedUsers.split(",").map((user) => user.trim())
         : [],
-      media,
+      media: image ? image.secure_url : media, // Actualiza la media con la URL de Cloudinary
       creator: req.user.id, // Asegúrate de tener el ID del creador
     });
 
@@ -72,6 +73,8 @@ export const getPostsByUserId = async (req, res) => {
 export const updatePost = async (req, res) => {
   try {
     const { description, location, taggedUsers } = req.body;
+    const media = req.file ? req.file.path : null; // Obtener el archivo subido
+    const image = req.uploadedFile;
 
     const updatedPost = await Post.findByIdAndUpdate(
       req.params.id,
@@ -80,7 +83,7 @@ export const updatePost = async (req, res) => {
         location,
         taggedUsers,
         category: req.body.category,
-        media: req.file ? req.file.path : undefined, // Solo actualiza la media si se subió un nuevo archivo
+        media: image ? image.secure_url : media,
       },
       { new: true } // Devuelve el documento actualizado
     );
