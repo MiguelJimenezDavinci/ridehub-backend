@@ -28,7 +28,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
-// Rutas
+// Rutas de la API
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/users", userRoutes);
@@ -36,10 +36,11 @@ app.use("/api/posts", postRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/communities", communityRoutes);
 
-// Servir archivos estáticos si estás en producción
+// Servir los archivos estáticos de React en producción
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client/build")));
 
+  // Cualquier otra ruta que no sea una API debe devolver el index.html
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
