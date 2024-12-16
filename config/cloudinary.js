@@ -1,10 +1,13 @@
+// src/config/cloudinary.js
 import { v2 as cloudinary } from "cloudinary";
+import dotenv from "dotenv";
 
-// Configuración de Cloudinary
+dotenv.config();
+
 cloudinary.config({
-  cloud_name: "ddnxqi58b", // Reemplaza con tu nombre de nube
-  api_key: "581198546461533", // Reemplaza con tu API Key
-  api_secret: "4o_LkadyeZlu1d4dYQOGVV9d404", // Reemplaza con tu API Secret
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 export default cloudinary;
