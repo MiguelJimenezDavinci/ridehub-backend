@@ -32,6 +32,7 @@ export const uploadToCloudinary = async (req, res, next) => {
     // Stream para manejar el archivo
     const stream = result;
     stream.end(fileData.buffer);
+    console.log("Uploaded to Cloudinary:", result.secure_url);
   } catch (err) {
     console.error("Upload middleware error:", err);
     return res.status(500).json({ message: "Internal server error" });
