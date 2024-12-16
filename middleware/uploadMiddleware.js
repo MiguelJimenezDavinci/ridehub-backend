@@ -1,7 +1,7 @@
 import cloudinary from "../config/cloudinary.js";
 import multer from "multer";
 
-// Configurar Multer para procesar archivos en memoria
+// Configuración de Multer para procesar archivos en memoria
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
@@ -12,27 +12,25 @@ export const uploadToCloudinary = async (req, res, next) => {
   }
 
   try {
-    // Inicia el upload a Cloudinary con el buffer del archivo
-    const uploadedResponse = cloudinary.uploader.upload_stream(
-      {
-        folder: "social-app", // Carpeta donde se almacenarán los archivos en Cloudinary
-      },
-      (error, result) => {
-        if (error) {
-          return next(error); // Si hay error, pasa el error al siguiente middleware
+    // Subir el archivo a Cloudinary usando el buffer
+    cloudinary.uploader
+      .upload_stream(
+        {
+          folder: "social-app", // Carpeta en Cloudinary
+        },
+        (error, result) => {
+          if (error) {
+            return next(error); // Si ocurre un error, lo pasa al siguiente middleware
+          }
+
+          // Guarda la respuesta de Cloudinary en el objeto de solicitud
+          req.uploadedFile = result;
+          return next(); // Pasa al siguiente middleware
         }
-
-        // Añade la URL de la imagen a la solicitud (req) para que pueda ser usada posteriormente
-        req.uploadedFile = result;
-        return next(); // Continuar con el siguiente middleware
-      }
-    );
-
-    // Usar el buffer del archivo directamente
-    uploadedResponse.end(req.file.buffer); // Usar el buffer del archivo
-    console.log("Archivo recibido:", req.file);
+      )
+      .end(req.file.buffer); // Usa el buffer para subir el archivo
   } catch (error) {
-    return next(error); // Si hay un error en el middleware, lo pasa
+    return next(error); // Si hay un error, lo pasa al siguiente middleware
   }
 };
 
