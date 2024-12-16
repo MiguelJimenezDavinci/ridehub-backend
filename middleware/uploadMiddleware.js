@@ -16,7 +16,7 @@ export const uploadToCloudinary = async (req, res, next) => {
     cloudinary.uploader
       .upload_stream(
         {
-          folder: "social-app", // Carpeta en Cloudinary
+          folder: "ridehub", // Carpeta en Cloudinary
         },
         (error, result) => {
           if (error) {

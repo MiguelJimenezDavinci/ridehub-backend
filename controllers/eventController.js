@@ -1,10 +1,12 @@
 import Event from "../models/Event.js";
+import cloudinary from "../config/cloudinary.js";
 
 // Crear evento
 export const createEvent = async (req, res) => {
   const { title, description, date, location, latitude, longitude, category } =
     req.body;
   const imagePath = req.file ? req.file.path : null; // Ruta de la imagen si se ha subido una
+  const image = req.uploadedFile; // Obtiene la respuesta de Cloudinary
 
   try {
     const event = await Event.create({
@@ -15,7 +17,7 @@ export const createEvent = async (req, res) => {
       latitude,
       longitude,
       category,
-      image: imagePath,
+      image: image ? image.secure_url : imagePath,
       creator: req.user.id, // Guardamos la ruta de la imagen en el campo "image"
     });
 
@@ -31,6 +33,7 @@ export const updateEvent = async (req, res) => {
   const { title, description, date, location, latitude, longitude, category } =
     req.body;
   const imagePath = req.file ? req.file.path : null;
+  const image = req.uploadedFile; // Obtiene la respuesta de Cloudinary
 
   try {
     const event = await Event.findById(id);
@@ -45,7 +48,7 @@ export const updateEvent = async (req, res) => {
     event.latitude = latitude || event.latitude;
     event.longitude = longitude || event.longitude;
     event.category = category || event.category;
-    event.image = imagePath || event.image;
+    event.image = image ? image.secure_url : imagePath || event.image;
 
     await event.save();
 
