@@ -12,7 +12,7 @@ export const uploadToCloudinary = async (req, res, next) => {
   }
 
   try {
-    // Inicia el upload a Cloudinary
+    // Inicia el upload a Cloudinary con el buffer del archivo
     const uploadedResponse = cloudinary.uploader.upload_stream(
       {
         folder: "social-app", // Carpeta donde se almacenarán los archivos en Cloudinary
@@ -28,8 +28,9 @@ export const uploadToCloudinary = async (req, res, next) => {
       }
     );
 
-    // Pasa el archivo de la solicitud a Cloudinary
-    req.file.stream.pipe(uploadedResponse);
+    // Usar el buffer del archivo directamente
+    uploadedResponse.end(req.file.buffer); // Usar el buffer del archivo
+    console.log("Archivo recibido:", req.file);
   } catch (error) {
     return next(error); // Si hay un error en el middleware, lo pasa
   }
