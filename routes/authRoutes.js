@@ -10,7 +10,7 @@ import {
   getUsers,
 } from "../controllers/authController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
-import upload from "../middleware/uploadMiddleware.js"; // Asegúrate de tener el middleware de subida de archivos configurado
+import { upload, uploadToCloudinary } from "../middleware/uploadMiddleware.js"; // Asegúrate de tener el middleware de subida de archivos configurado
 
 const router = express.Router();
 
@@ -21,7 +21,13 @@ router.get("/users", getUsers);
 
 // Rutas protegidas con autenticación
 router.get("/profile", authMiddleware, getProfile);
-router.put("/profile", authMiddleware, upload.single("photo"), updateProfile); // Cargar imagen con 'upload'
+router.put(
+  "/profile",
+  authMiddleware,
+  upload.single("photo"),
+  uploadToCloudinary,
+  updateProfile
+); // Cargar imagen con 'upload'
 router.put("/profile/role", authMiddleware, UpdateRole);
 router.delete("/profile/:userId", authMiddleware, deleteAccount);
 

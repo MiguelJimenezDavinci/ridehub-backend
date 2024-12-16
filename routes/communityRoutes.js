@@ -15,15 +15,20 @@ import {
   getCommunityMembers,
   getUserCreatedCommunities,
 } from "../controllers/communityController.js";
-import upload from "../middleware/uploadMiddleware.js";
+import { upload, uploadToCloudinary } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", upload.single("media"), createCommunity);
+router.post("/", upload.single("media"), uploadToCloudinary, createCommunity);
 router.get("/", getAllCommunities);
 router.get("/:communityId", getCommunityById);
 router.get("/user/:userId", getCommunityByUserId);
-router.put("/:communityId", upload.single("media"), updateCommunity);
+router.put(
+  "/:communityId",
+  upload.single("media"),
+  uploadToCloudinary,
+  updateCommunity
+);
 router.delete("/:communityId", deleteCommunity);
 router.post("/join", joinCommunity);
 router.post("/leave", leaveCommunity);

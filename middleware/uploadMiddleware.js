@@ -1,17 +1,44 @@
-// src/middleware/uploadMiddleware.js
+import cloudinary from "../config/cloudinary.js";
 import multer from "multer";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs/promises";
 
-// Configuración de Multer para la subida de archivos
+// Usamos Multer para manejar archivos temporales
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Carpeta donde se guardarán las imágenes
-  },
+  destination: "temp/",
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + "-" + file.originalname);
+    const uniqueName = `${uuidv4()}-${file.originalname}`;
+    cb(null, uniqueName);
   },
 });
 
 const upload = multer({ storage });
 
-export default upload;
+// Middleware de subida a Cloudinary
+const uploadToCloudinary = async (req, res, next) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No se encontró ningún archivo." });
+  }
+
+  try {
+    // Subir el archivo temporal a Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "ridehub", // Carpeta en Cloudinary
+    });
+
+    // Guardar la URL de la imagen en el cuerpo de la solicitud
+    req.body.image = result.secure_url;
+
+    // Eliminar el archivo temporal
+    await fs.unlink(req.file.path);
+
+    next();
+  } catch (error) {
+    console.error("Error al subir a Cloudinary:", error.message);
+    return res
+      .status(500)
+      .json({ error: "Error al subir la imagen a Cloudinary" });
+  }
+};
+
+export { upload, uploadToCloudinary };
