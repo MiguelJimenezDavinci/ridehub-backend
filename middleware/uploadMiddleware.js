@@ -7,7 +7,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Middleware para subir archivos a Cloudinary
-const uploadToCloudinary = async (req, res, next) => {
+export const uploadToCloudinary = async (req, res, next) => {
   if (!req.file) {
     return next();
   }
