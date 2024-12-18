@@ -71,34 +71,31 @@ export const getPostsByUserId = async (req, res) => {
 };
 
 export const updatePost = async (req, res) => {
+  const { id } = req.params;
+  const { description, location, category, taggedUsers } = req.body;
+  const media = req.file ? req.file.path : null; // Obtener el archivo subido
+  const image = req.uploadedFile;
+
   try {
-    const { description, location, taggedUsers } = req.body;
-    const media = req.file ? req.file.path : null; // Obtener el archivo subido
-    const image = req.uploadedFile;
+    const post = await Post.findById(id);
 
-    const updatedPost = await Post.findByIdAndUpdate(
-      req.params.id,
-      {
-        description,
-        location,
-        taggedUsers,
-        category: req.body.category,
-        media: image ? image.secure_url : media,
-      },
-      { new: true } // Devuelve el documento actualizado
-    );
-
-    if (!updatedPost) {
-      return res.status(404).json({ message: "Publicación no encontrada." });
+    if (!post) {
+      return res.status(404).json({ message: "Publicación no encontrada" });
     }
 
-    res.status(200).json({
-      message: "Publicación actualizada exitosamente.",
-      post: updatedPost,
-    });
+    post.description = description || post.description;
+    post.location = location || post.location;
+    post.category = category || post.category;
+    post.taggedUsers = taggedUsers
+      ? taggedUsers.split(",").map((user) => user.trim())
+      : post.taggedUsers;
+    post.media = image.secure_url || post.media;
+
+    await post.save();
+
+    res.status(200).json({ message: "Publicación actualizada", post });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al actualizar la publicación." });
+    res.status(500).json({ message: "Error al actualizar la publicación" });
   }
 };
 
