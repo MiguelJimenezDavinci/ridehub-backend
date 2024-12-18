@@ -97,7 +97,12 @@ export const updatePost = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error al actualizar la publicación." });
+    res
+      .status(500)
+      .json({
+        message: "Error al actualizar la publicación.",
+        error: error.message,
+      });
   }
 };
 
